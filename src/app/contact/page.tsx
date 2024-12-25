@@ -17,7 +17,7 @@ export default function Contact() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl font-bold mt-10 text-black">Contact Us</h1>
-          <p className="mt-4 text-gray-700">We would love to hear from you. Let’s connect!</p>
+          <p className="mt-4 text-gray-700">We would love to hear from you. Let&apos;s connect!</p>
         </motion.div>
 
         {/* Contact Links Section */}
@@ -68,7 +68,7 @@ export default function Contact() {
 
           {state.succeeded ? (
             <p className="text-center text-blue-900 font-semibold">
-              Thank you for reaching out! We'll get back to you soon.
+              Thank you for reaching out! We&apos;ll get back to you soon.
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
