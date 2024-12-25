@@ -34,12 +34,12 @@ export default function Homepage() {
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg font-serif text-gray-300 mb-4">
+            <p className="text-lg font-serif text-gray-300">
               Stay informed, inspired, and ahead in the AI revolution. Dive into expert insights, <br /> tutorials, and news crafted for curious minds.
             </p>
 
             {/* Hero Image */}
-            <div className="relative w-full h-full flex justify-center items-center mb-10 ">
+            <div className="relative w-full h-full flex justify-center items-center mb-14 ">
               <Image
                 src="/home1.png"
                 alt="AI Future"
@@ -52,7 +52,7 @@ export default function Homepage() {
             {/* Call-to-Action Button with black color */}
             <Link
               href="/blog"
-              className="inline-block scale-100 hover:scale-110 px-8 py-3 bg-blue-950 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-300"
+              className="inline-block scale-100 hover:scale-110 px-4 py-3 bg-blue-950 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-300"
             >
               Read Our Latest Blogs
             </Link>
