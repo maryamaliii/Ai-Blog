@@ -8,6 +8,7 @@ type Comment = {
   text: string;
   timestamp: string;
   userId: string;
+  username: string; // Add username for better identification
 };
 
 const CommentSection: React.FC = () => {
@@ -16,40 +17,53 @@ const CommentSection: React.FC = () => {
   const [editId, setEditId] = useState<string | null>(null);
   const [editText, setEditText] = useState<string>("");
 
-  // Load comments from localStorage when component mounts
+  // Simulate a unique user ID for the current session
+  const currentUser = React.useMemo(() => {
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+      userId = `user-${Date.now()}`;
+      localStorage.setItem("userId", userId);
+    }
+    return userId;
+  }, []);
+
+  const currentUsername = "User " + currentUser.slice(-4); // Mock username from user ID
+
+  // Load comments from localStorage (replace with API call in production)
   useEffect(() => {
-    const storedComments = localStorage.getItem("comments");
+    const storedComments = localStorage.getItem("sharedComments");
     if (storedComments) {
       setComments(JSON.parse(storedComments));
     }
   }, []);
 
-  // Save comments to localStorage whenever they change
+  // Save comments globally to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem("comments", JSON.stringify(comments));
+    localStorage.setItem("sharedComments", JSON.stringify(comments));
   }, [comments]);
 
   // Add a new comment
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    const timestamp = new Date().toLocaleString(); // Get current timestamp
+    const timestamp = new Date().toLocaleString();
     const newCommentObj: Comment = {
       id: Date.now().toString(),
       text: newComment,
       timestamp,
-      userId: `User ${comments.length + 1}`, // Generate user ID
+      userId: currentUser,
+      username: currentUsername,
     };
     setComments([newCommentObj, ...comments]); // Prepend the new comment
     setNewComment(""); // Clear input
   };
 
-  // Delete a comment
+  // Delete a comment (only allowed for the author)
   const handleDeleteComment = (id: string) => {
     const updatedComments = comments.filter((comment) => comment.id !== id);
     setComments(updatedComments);
   };
 
-  // Enable edit mode
+  // Enable edit mode (only allowed for the author)
   const handleEditComment = (id: string) => {
     const commentToEdit = comments.find((comment) => comment.id === id);
     if (commentToEdit) {
@@ -58,7 +72,7 @@ const CommentSection: React.FC = () => {
     }
   };
 
-  // Save the edited comment automatically
+  // Save the edited comment
   const handleSaveEdit = () => {
     if (editId) {
       setComments(
@@ -97,24 +111,26 @@ const CommentSection: React.FC = () => {
               ) : (
                 <div className="flex justify-between items-center">
                   <span className="flex-1">{comment.text}</span>
-                  <div className="ml-4 flex space-x-2">
-                    <button
-                      onClick={() => handleEditComment(comment.id)}
-                      className="bg-black text-white px-3 py-1 rounded-md"
-                    >
-                      <FaRegEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteComment(comment.id)}
-                      className="bg-blue-950 text-white px-3 py-1 rounded-md hover:bg-blue-900"
-                    >
-                      <FaTrash />
-                    </button>
-                  </div>
+                  {comment.userId === currentUser && (
+                    <div className="ml-4 flex space-x-2">
+                      <button
+                        onClick={() => handleEditComment(comment.id)}
+                        className="bg-black text-white px-3 py-1 rounded-md"
+                      >
+                        <FaRegEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="bg-blue-950 text-white px-3 py-1 rounded-md hover:bg-blue-900"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
               <div className="text-sm text-gray-500 mt-1">
-                {comment.userId} - {comment.timestamp}
+                {comment.username} - {comment.timestamp}
               </div>
             </li>
           ))}
@@ -132,7 +148,7 @@ const CommentSection: React.FC = () => {
         />
         <button
           onClick={handleAddComment}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
+          className="bg-blue-950 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
         >
           Post
         </button>
